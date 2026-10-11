@@ -27,6 +27,25 @@
     *:focus { outline: none; }
     *:focus-visible { outline: none; }
 
+    /* ── FOCUS-VISIBLE (restores a visible focus indicator on controls that lost it above) ── */
+    .btn-secondary:focus-visible,
+    .info-btn:focus-visible,
+    .text-link:focus-visible,
+    .select-field:focus-visible {
+      box-shadow: 0 0 0 2px inset;
+    }
+    .radio-control input[type="radio"]:focus-visible ~ .radio-visual {
+      box-shadow: 0 0 0 2px #fcfcfd;
+    }
+    input[type="range"]:focus-visible::-webkit-slider-thumb {
+      outline: 2px solid #fcfcfd;
+      outline-offset: 2px;
+    }
+    input[type="range"]:focus-visible::-moz-range-thumb {
+      outline: 2px solid #fcfcfd;
+      outline-offset: 2px;
+    }
+
     /* ── TOKENS ─────────────────────────────────────────────────────────── */
     :root {
       --canvas:            #101319;
@@ -866,7 +885,7 @@
   <div class="header">
     <div class="header-icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <path d="M18.5 8.5H13.5V40.5C13.5 41.5609 13.9214 42.5783 14.6716 43.3284C15.4217 44.0786 16.4391 44.5 17.5 44.5H29.5C30.2082 44.5 30.8971 44.3122 31.5 43.9641M18.5 8.5V4.5H28.5V4.5M18.5 8.5H28.5M28.5 8.5H33.5V26.5M28.5 18.5H23.5M23.5 18.5H18.5M23.5 18.5V23.5M23.5 18.5V13.5M19.5 36.5H27.5M34.5016 30.5002H29.8016C29.8016 30.5002 27.6016 30.4002 27.6016 32.5002C27.6016 34.6002 29.8016 34.5002 29.8016 34.5002H31.0016C32.0016 34.5002 32.5016 34.9002 32.5016 36.4002V42.0002M34.5016 30.5002C34.5016 26.4002 39.0016 26.5002 39.0016 26.5002H41.5016V34.5002H39.0016C39.0016 34.5002 34.5016 34.6002 34.5016 30.5002ZM41.5016 32.5002H45.0016M41.5016 28.5002H45.0016" stroke="#FCFCFD" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18.5 8.5H13.5V40.5C13.5 41.5609 13.9214 42.5783 14.6716 43.3284C15.4217 44.0786 16.4391 44.5 17.5 44.5H29.5C30.2082 44.5 30.8971 44.3122 31.5 43.9641M18.5 8.5V4.5H28.5V8.5M18.5 8.5H28.5M28.5 8.5H33.5V26.5M28.5 18.5H23.5M23.5 18.5H18.5M23.5 18.5V23.5M23.5 18.5V13.5M19.5 36.5H27.5M34.5016 30.5002H29.8016C29.8016 30.5002 27.6016 30.4002 27.6016 32.5002C27.6016 34.6002 29.8016 34.5002 29.8016 34.5002H31.0016C32.0016 34.5002 32.5016 34.9002 32.5016 36.4002V42.0002M34.5016 30.5002C34.5016 26.4002 39.0016 26.5002 39.0016 26.5002H41.5016V34.5002H39.0016C39.0016 34.5002 34.5016 34.6002 34.5016 30.5002ZM41.5016 32.5002H45.0016M41.5016 28.5002H45.0016" stroke="#FCFCFD" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <h1>Calculate your charging time</h1>
@@ -887,19 +906,19 @@
           </button>
         </div>
         <div class="btn-loc-group">
-          <button class="btn-loc" data-loc="home">
+          <button class="btn-loc" data-loc="home" aria-pressed="false">
             <img src="assets/icons/home.svg" width="19" height="14" alt="">
             <span>At home</span>
           </button>
-          <button class="btn-loc" data-loc="workplace">
+          <button class="btn-loc" data-loc="workplace" aria-pressed="false">
             <img src="assets/icons/work.svg" width="14" height="20" alt="">
             <span>Workplace</span>
           </button>
-          <button class="btn-loc" data-loc="public">
+          <button class="btn-loc" data-loc="public" aria-pressed="false">
             <img src="assets/icons/city.svg" width="20" height="20" alt="">
             <span>Public</span>
           </button>
-          <button class="btn-loc selected" data-loc="motorway">
+          <button class="btn-loc selected" data-loc="motorway" aria-pressed="true">
             <img src="assets/icons/motorway.svg" width="22" height="22" alt="">
             <span>Motorway</span>
           </button>
@@ -915,15 +934,15 @@
           </button>
         </div>
         <div class="btn-type-group">
-          <button class="btn-type disabled" data-type="household">
+          <button class="btn-type disabled" data-type="household" aria-pressed="false">
             <img src="assets/icons/household.svg" width="18" height="16" alt="">
             <span>Household socket</span>
           </button>
-          <button class="btn-type disabled" data-type="wallbox">
+          <button class="btn-type disabled" data-type="wallbox" aria-pressed="false">
             <img src="assets/icons/wallbox.svg" width="21" height="22" alt="">
             <span>Wallbox (AC)</span>
           </button>
-          <button class="btn-type selected" data-type="dc">
+          <button class="btn-type selected" data-type="dc" aria-pressed="true">
             <img src="assets/icons/charging-station.svg" width="22" height="22" alt="">
             <span>Charging Station (DC)</span>
           </button>
@@ -939,11 +958,11 @@
           </button>
         </div>
         <div class="btn-kw-group">
-          <button class="btn-kw disabled" data-kw="2.3">2.3 kW</button>
-          <button class="btn-kw disabled" data-kw="7.2">7.2 kW</button>
-          <button class="btn-kw" data-kw="50">50 kW</button>
-          <button class="btn-kw" data-kw="150">150 kW</button>
-          <button class="btn-kw selected" data-kw="350">350 kW</button>
+          <button class="btn-kw disabled" data-kw="2.3" aria-pressed="false">2.3 kW</button>
+          <button class="btn-kw disabled" data-kw="7.2" aria-pressed="false">7.2 kW</button>
+          <button class="btn-kw" data-kw="50" aria-pressed="false">50 kW</button>
+          <button class="btn-kw" data-kw="150" aria-pressed="false">150 kW</button>
+          <button class="btn-kw selected" data-kw="350" aria-pressed="true">350 kW</button>
         </div>
       </div>
 
@@ -964,8 +983,8 @@
           <div class="slider-track-row" style="position:relative; height:24px; display:flex; align-items:center;">
             <div class="slider-track-bg"></div>
             <div class="slider-track-fill" id="charge-fill" style="left:20%;width:60%;"></div>
-            <input type="range" class="dual-slider-input" id="charge-min" min="0" max="100" value="20" step="5">
-            <input type="range" class="dual-slider-input" id="charge-max" min="0" max="100" value="80" step="5">
+            <input type="range" class="dual-slider-input" id="charge-min" min="0" max="100" value="20" step="5" aria-label="Current charge level">
+            <input type="range" class="dual-slider-input" id="charge-max" min="0" max="100" value="80" step="5" aria-label="Desired charge level">
           </div>
           <div class="slider-range-row">
             <span>0 %</span>
@@ -1085,19 +1104,19 @@
               <img src="assets/icons/info.svg" width="16" height="16" alt="">
             </button>
           </div>
-          <p class="result-value" id="result-value"></p>
+          <p class="result-value" id="result-value" aria-live="polite" aria-atomic="true"></p>
         </div>
         <div class="btn-group" id="btn-group-nxt">
-          <a class="btn-secondary" id="btn-build" target="_blank">Build</a>
+          <a class="btn-secondary" id="btn-build" target="_blank" rel="noopener noreferrer">Build</a>
           <div class="text-link-group">
             <div class="text-link-standalone">
               <div class="text-link-content">
-                <a class="text-link" id="link-new-cars" target="_blank"></a>
+                <a class="text-link" id="link-new-cars" target="_blank" rel="noopener noreferrer"></a>
               </div>
             </div>
             <div class="text-link-standalone">
               <div class="text-link-content">
-                <a class="text-link" id="link-used-cars" target="_blank"></a>
+                <a class="text-link" id="link-used-cars" target="_blank" rel="noopener noreferrer"></a>
               </div>
             </div>
           </div>
@@ -1325,7 +1344,9 @@
   function selectPower(kw) {
     selectedKW = kw;
     document.querySelectorAll('.btn-kw').forEach(btn => {
-      btn.classList.toggle('selected', parseFloat(btn.dataset.kw) === kw);
+      const isSelected = parseFloat(btn.dataset.kw) === kw;
+      btn.classList.toggle('selected', isSelected);
+      btn.setAttribute('aria-pressed', String(isSelected));
     });
     updateResult();
   }
@@ -1335,7 +1356,9 @@
 
     // Update charger type button selection
     document.querySelectorAll('.btn-type').forEach(btn => {
-      btn.classList.toggle('selected', btn.dataset.type === type);
+      const isSelected = btn.dataset.type === type;
+      btn.classList.toggle('selected', isSelected);
+      btn.setAttribute('aria-pressed', String(isSelected));
     });
 
     // Enable/disable power buttons based on charger type
@@ -1365,7 +1388,9 @@
   function selectLocation(loc) {
     // Update location button selection
     document.querySelectorAll('.btn-loc').forEach(btn => {
-      btn.classList.toggle('selected', btn.dataset.loc === loc);
+      const isSelected = btn.dataset.loc === loc;
+      btn.classList.toggle('selected', isSelected);
+      btn.setAttribute('aria-pressed', String(isSelected));
     });
 
     const typeBtns = document.querySelectorAll('.btn-type');
