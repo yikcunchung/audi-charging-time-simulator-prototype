@@ -24,25 +24,8 @@
 
     /* ── RESET ──────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    *:focus { outline: none; }
-    *:focus-visible { outline: none; }
-
-    /* ── FOCUS-VISIBLE (restores a visible focus indicator on controls that lost it above) ── */
-    .info-btn:focus-visible,
-    .select-field:focus-visible {
-      box-shadow: 0 0 0 2px inset;
-    }
-    .radio-control input[type="radio"]:focus-visible ~ .radio-visual {
-      box-shadow: 0 0 0 2px #fcfcfd;
-    }
-    input[type="range"]:focus-visible::-webkit-slider-thumb {
-      outline: 2px solid #fcfcfd;
-      outline-offset: 2px;
-    }
-    input[type="range"]:focus-visible::-moz-range-thumb {
-      outline: 2px solid #fcfcfd;
-      outline-offset: 2px;
-    }
+    /* Keyboard focus ring (DS3: outline auto 1px, #005fcc); mouse focus shows none */
+    :focus-visible { outline: auto 1px var(--focus-ring); }
 
     /* ── TOKENS ─────────────────────────────────────────────────────────── */
     :root {
@@ -59,6 +42,28 @@
       --radius-card:       20px;
       --radius-input:      10px;
       --radius-pill:       999px;
+      --radius-panel:      28px;
+      /* DS3 state/surface colours used by the controls */
+      --surface-hover:          #2c343f;
+      --surface-selected:       #404a59;
+      --surface-selected-hover: #37404e;
+      --surface-tile-start:     #232a34;
+      --surface-tile-end:       #181d25;
+      --surface-input-hover:    rgba(44,52,63,0.6);
+      --gradient-tile:          linear-gradient(var(--surface-tile-start) 0%, var(--surface-tile-end) 100%);
+      --gradient-layer:         linear-gradient(134deg, var(--surface-hover) 0%, var(--surface-tile-start) 100%);
+      --border-subtle:          rgba(219,223,230,0.2);
+      --border-input-focus:     #dbdfe6;
+      --border-sticky:          #dfe4e8;
+      --text-disabled:          rgba(252,252,253,0.1);
+      --slider-thumb-border:    var(--surface-hover);
+      --focus-ring:             #005fcc;
+      --shader:                 rgba(2,2,3,0.7);
+      --surface-topbar:         #020203;
+      --transition-duration:    0.25s;
+      --transition-easing:      cubic-bezier(0.75, 0.02, 0.5, 1);
+      --duration-reel:          1s;
+      --easing-reel:            ease;
       --max-content-width: 1920px;
       --page-width:        320px;
       --sys-page-margin:       16px;
@@ -106,6 +111,11 @@
       --font-headline:     'Audi Type Variable', sans-serif;
       --wdth-wide:         105;
       --wdth-extended:     130;
+      --sys-fs-copy-order1:   1rem;      --sys-lh-copy-order1:   1.5rem;
+      --sys-fs-copy-order2:   0.875rem;  --sys-lh-copy-order2:   1.5rem;
+      --sys-fs-copy-order3:   0.75rem;   --sys-lh-copy-order3:   1.25rem;
+      --sys-fs-label-order1:  1rem;      --sys-lh-label-order1:  1.25rem;
+      --sys-fs-label-order2:  0.875rem;  --sys-lh-label-order2:  1.25rem;
       --sys-fs-display-order1:  40px;  --sys-lh-display-order1:  60px;
       --sys-fs-display-order2:  36px;  --sys-lh-display-order2:  52px;
       --sys-fs-display-order3:  32px;  --sys-lh-display-order3:  48px;
@@ -252,8 +262,8 @@
     }
 
     /* ── HEADER ─────────────────────────────────────────────────────────── */
-    .header { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 40px; }
-    .header-icon { flex-shrink: 0; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+    .header { display: flex; align-items: flex-start; gap: var(--sys-space-fixed-250); margin-bottom: var(--sys-space-fixed-500); }
+    .header-icon { flex-shrink: 0; width: var(--sys-space-fixed-600); height: var(--sys-space-fixed-600); display: flex; align-items: center; justify-content: center; }
     .header h1 {
       font-family: var(--font-headline);
       font-variation-settings: 'wdth' 130, 'wght' 400;
@@ -275,101 +285,121 @@
     .input-end-sentinel { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; pointer-events: none; }
 
     /* ── COMBO ───────────────────────────────────────────────────────────── */
-    .combo { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .combo { display: flex; flex-direction: column; gap: var(--sys-space-relative-xs); min-width: 0; }
     /* The info icon sits inline at the end of the label so it wraps together with the last word */
     .question { display: block; }
     .question-text {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 16px; line-height: 24px; letter-spacing: 0px;
+      font-size: var(--sys-fs-copy-order1); line-height: var(--sys-lh-copy-order1); letter-spacing: 0px;
       font-stretch: 105%; font-weight: 400;
       color: var(--text-muted); text-decoration: none;
     }
     .question-end { white-space: nowrap; }
 
+    /* Info button: 36px round hit area; hover/pressed fill + light border (DS3 core-control transition) */
     .info-btn {
-      width: 36px; height: 36px;
+      width: var(--sys-space-fixed-450); height: var(--sys-space-fixed-450);
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; background: none; border: none; cursor: pointer; padding: 0;
+      flex-shrink: 0; padding: 0; cursor: pointer;
+      background-color: transparent;
+      border: 1px solid transparent; border-radius: var(--radius-pill);
+      color: var(--text-primary);
+      transition-property: color, box-shadow, border-color, background-color;
+      transition-duration: var(--transition-duration);
+      transition-timing-function: var(--transition-easing);
+    }
+    .info-btn:hover, .info-btn:active {
+      background-color: var(--surface-hover);
+      border-color: var(--border-subtle);
     }
     .question-end .info-btn {
       display: inline-flex; vertical-align: middle;
       /* 36px hit area, but only the 16px icon counts towards the line width (as in the design) */
-      margin-left: 4px; margin-right: -12px;
+      margin-left: var(--sys-space-relative-2xs); margin-right: calc(var(--sys-space-relative-sm) * -1);
     }
-    .info-btn svg, .info-btn img { width: 16px; height: 16px; }
+    .info-btn svg, .info-btn img { width: var(--sys-space-fixed-200); height: var(--sys-space-fixed-200); }
 
     /* footnote reference in running text */
     .fn-ref {
-      display: inline-block; font-size: 12px; line-height: 20px; vertical-align: super;
+      display: inline-block; font-size: var(--sys-fs-copy-order3); line-height: var(--sys-lh-copy-order3); vertical-align: super;
       color: var(--text-muted);
     }
 
-    /* ── TILE BUTTONS (location / charger type / power) ────────────────── */
+    /* ── TILES (location / charger type / power): radio input + label ───── */
     .btn-loc-group, .btn-type-group, .btn-kw-group {
-      display: flex; gap: 16px;
+      display: flex; gap: var(--sys-space-relative-md);
       /* below 768: single scrollable row that bleeds to the right viewport edge */
       overflow-x: auto; scrollbar-width: none;
       margin-right: calc(var(--sys-page-margin) * -1);
-      padding: 2px var(--sys-page-margin) 2px 0;
+      padding: var(--sys-space-fixed-25) var(--sys-page-margin) var(--sys-space-fixed-25) 0;
     }
     .btn-loc-group::-webkit-scrollbar, .btn-type-group::-webkit-scrollbar, .btn-kw-group::-webkit-scrollbar { display: none; }
 
     .btn-loc, .btn-type, .btn-kw {
+      --tile-ring: 0px;
+      --tile-ring-color: var(--text-primary);
+      position: relative;
       flex: 0 0 auto;
       display: flex; flex-direction: row; align-items: center; justify-content: center;
-      gap: 4px; padding: 12px 22px; min-height: 48px;
-      border: 0; border-radius: 20px;
-      background: linear-gradient(to bottom, #232a34, #181d25);
+      gap: var(--sys-space-relative-2xs); padding: var(--sys-space-relative-sm) 22px; min-height: var(--sys-space-fixed-600);
+      border-radius: var(--radius-card);
+      background-color: transparent;
+      background-image: var(--gradient-tile);
+      box-shadow: inset 0 0 0 var(--tile-ring) var(--tile-ring-color);
       color: var(--text-primary);
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 14px; line-height: 24px; font-weight: 400; letter-spacing: 0px;
+      font-size: var(--sys-fs-copy-order2); line-height: var(--sys-lh-copy-order2); font-weight: 400; letter-spacing: 0px;
       text-align: center; white-space: nowrap;
       cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s;
     }
-    .btn-loc:not(.selected):not(.disabled):hover,
-    .btn-type:not(.selected):not(.disabled):hover,
-    .btn-kw:not(.selected):not(.disabled):hover {
-      background: linear-gradient(to bottom, #2b3344, #1e2530);
-    }
-    .btn-loc.selected, .btn-type.selected, .btn-kw.selected {
-      background: #404a59;
-      box-shadow: inset 0 0 0 2px #fcfcfd;
-    }
-    .btn-type.disabled, .btn-kw.disabled {
-      color: rgba(252, 252, 253, 0.1);
-      cursor: default; pointer-events: none;
-    }
-    .tile-icon { flex-shrink: 0; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+    /* the radio input covers the tile (invisible, keeps native radio-group keyboard behaviour) */
+    .tile-input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+    .tile-icon { flex-shrink: 0; width: var(--sys-space-fixed-200); height: var(--sys-space-fixed-200); display: flex; align-items: center; justify-content: center; }
     .tile-icon img { display: block; width: 100%; height: 100%; object-fit: contain; }
-    .btn-type.disabled .tile-icon { opacity: 0.1; }
-    .btn-loc:not(.disabled):focus-visible,
-    .btn-type:not(.disabled):focus-visible,
-    .btn-kw:not(.disabled):focus-visible { box-shadow: 0 0 0 2px inset; }
-    .btn-loc.selected:focus-visible, .btn-type.selected:focus-visible, .btn-kw.selected:focus-visible { box-shadow: inset 0 0 0 2px #fcfcfd, 0 0 0 2px var(--canvas), 0 0 0 4px #fcfcfd; }
+
+    /* selected: solid surface + 2px inset ring */
+    :is(.btn-loc, .btn-type, .btn-kw):has(.tile-input:checked) {
+      --tile-ring: var(--sys-space-fixed-25);
+      background-image: none; background-color: var(--surface-selected);
+    }
+    /* hover / pressed (enabled): text, icon and ring go to 70%, no transition */
+    :is(.btn-loc, .btn-type, .btn-kw):hover:not(:has(.tile-input:disabled)),
+    :is(.btn-loc, .btn-type, .btn-kw):active:not(:has(.tile-input:disabled)) {
+      --tile-ring-color: var(--text-muted);
+      color: var(--text-muted);
+    }
+    :is(.btn-loc, .btn-type, .btn-kw):hover:not(:has(.tile-input:disabled)) .tile-icon,
+    :is(.btn-loc, .btn-type, .btn-kw):active:not(:has(.tile-input:disabled)) .tile-icon { opacity: 0.7; }
+    /* disabled: text, icon and ring at 10%, inert (cursor stays) */
+    :is(.btn-loc, .btn-type, .btn-kw):has(.tile-input:disabled) {
+      --tile-ring-color: var(--text-disabled);
+      color: var(--text-disabled);
+    }
+    :is(.btn-loc, .btn-type, .btn-kw):has(.tile-input:disabled) .tile-icon { opacity: 0.1; }
+    :is(.btn-loc, .btn-type, .btn-kw):has(.tile-input:focus-visible) { outline: auto 1px var(--focus-ring); outline-offset: var(--sys-space-fixed-25); }
 
     /* ── COMBO DIVIDER ──────────────────────────────────────────────────── */
     .combo-divider {
       border: none;
-      border-top: 2px solid var(--border-card);
+      border-top: var(--sys-space-fixed-25) solid var(--border-card);
       margin: 0;
     }
 
     /* ── SLIDERS (single + dual) ────────────────────────────────────────── */
     .slider-temp, .slider-dual { display: flex; flex-direction: column; width: 100%; }
-    .slider-value-row { position: relative; height: 32px; }
+    .slider-value-row { position: relative; height: var(--sys-space-fixed-400); }
     .slider-value-display {
       position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
       font-weight: 400;
-      font-size: 16px; line-height: 20px;
+      font-size: var(--sys-fs-label-order1); line-height: var(--sys-lh-label-order1);
       color: var(--text-muted); white-space: nowrap; padding: 0;
     }
-    #temp-display { padding: 2px 4px; }
-    .slider-track-row { position: relative; height: 24px; display: flex; align-items: center; }
+    #temp-display { padding: var(--sys-space-fixed-25) var(--sys-space-relative-2xs); }
+    .slider-track-row { position: relative; height: var(--sys-space-fixed-300); display: flex; align-items: center; }
     .slider-track-bg {
       position: absolute; left: 0; right: 0; top: 9px;
       height: 6px; background: var(--slider-track);
@@ -383,7 +413,7 @@
     input[type="range"].temp-slider,
     input[type="range"].dual-slider-input {
       position: absolute; left: 0; right: 0; top: 0; width: 100%;
-      height: 24px; background: transparent;
+      height: var(--sys-space-fixed-300); background: transparent;
       appearance: none; -webkit-appearance: none;
       cursor: pointer; z-index: 2; margin: 0;
     }
@@ -391,108 +421,118 @@
     input[type="range"].temp-slider::-webkit-slider-thumb,
     input[type="range"].dual-slider-input::-webkit-slider-thumb {
       appearance: none; -webkit-appearance: none;
-      width: 24px; height: 12px;
-      border-radius: 999px;
-      background: #fcfcfd; border: 1px solid #2c343f;
+      width: var(--sys-space-fixed-300); height: var(--sys-space-relative-sm);
+      border-radius: var(--radius-pill);
+      background: var(--slider-progress); border: 1px solid var(--slider-thumb-border);
       cursor: ew-resize; pointer-events: auto;
     }
     input[type="range"].temp-slider::-moz-range-thumb,
     input[type="range"].dual-slider-input::-moz-range-thumb {
-      width: 24px; height: 12px;
-      border-radius: 999px;
-      background: #fcfcfd; border: 1px solid #2c343f;
+      width: var(--sys-space-fixed-300); height: var(--sys-space-relative-sm);
+      border-radius: var(--radius-pill);
+      background: var(--slider-progress); border: 1px solid var(--slider-thumb-border);
       cursor: ew-resize; pointer-events: auto;
     }
     #charge-min { z-index: 3; }
     #charge-max { z-index: 4; }
     .slider-range-row {
-      display: flex; justify-content: space-between; padding-top: 8px;
+      display: flex; justify-content: space-between; padding-top: var(--sys-space-relative-xs);
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
       font-weight: 400;
-      font-size: 14px; line-height: 20px; color: var(--text-muted);
+      font-size: var(--sys-fs-label-order2); line-height: var(--sys-lh-label-order2); color: var(--text-muted);
     }
 
     /* ── RADIO GROUP ────────────────────────────────────────────────────── */
-    .radio-group { display: flex; gap: 24px; align-items: center; }
-    .radio-option { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-    .radio-control { width: 24px; height: 24px; flex-shrink: 0; position: relative; cursor: pointer; }
+    .radio-group { display: flex; gap: var(--sys-space-relative-lg); align-items: center; }
+    .radio-option { display: flex; align-items: center; gap: var(--sys-space-relative-sm); cursor: pointer; }
+    .radio-control { width: var(--sys-space-fixed-300); height: var(--sys-space-fixed-300); flex-shrink: 0; position: relative; cursor: pointer; }
     .radio-control input[type="radio"] {
       position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; margin: 0;
     }
     /* visual circle — CSS-driven, no SVG mask issues */
     .radio-visual {
-      display: block; width: 24px; height: 24px;
+      display: block; width: var(--sys-space-fixed-300); height: var(--sys-space-fixed-300);
       border-radius: 50%;
-      background: rgba(24,29,37,0.6);
-      border: 1px solid rgba(219,223,230,0.6);
+      background-color: var(--surface-input);
+      border: 1px solid var(--border-input);
       position: relative; flex-shrink: 0; pointer-events: none;
+      transition: border-color var(--transition-duration) ease, color var(--transition-duration) ease, background-color var(--transition-duration) ease;
     }
     .radio-control input[type="radio"]:checked ~ .radio-visual {
-      background: #404A59;
+      background-color: var(--surface-selected);
     }
     .radio-control input[type="radio"]:checked ~ .radio-visual::after {
       content: '';
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 12px; height: 12px;
+      width: var(--sys-space-relative-sm); height: var(--sys-space-relative-sm);
       border-radius: 50%;
-      background: rgba(252,252,253,0.7);
+      background: var(--text-muted);
     }
+    .radio-option:hover .radio-control input[type="radio"]:checked ~ .radio-visual { background-color: var(--surface-selected-hover); }
+    .radio-control input[type="radio"]:focus-visible { outline: auto 1px var(--focus-ring); outline-offset: var(--sys-space-fixed-25); }
+    .radio-control input[type="radio"]:focus-visible ~ .radio-visual { outline: solid var(--sys-space-fixed-25) var(--focus-ring); }
     .radio-label {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
       font-weight: 400;
-      font-size: 16px; line-height: 20px;
-      color: var(--text-muted); padding-top: 2px;
+      font-size: var(--sys-fs-label-order1); line-height: var(--sys-lh-label-order1);
+      color: var(--text-muted); padding-top: var(--sys-space-fixed-25);
+      transition: color var(--transition-duration) ease;
     }
+    .radio-option:hover .radio-label { color: var(--text-primary); }
 
     /* ── OUTPUT PANEL ───────────────────────────────────────────────────── */
     .section-output {
-      display: flex; flex-direction: column; gap: 32px;
-      min-width: 0; padding-inline: 4px;
+      display: flex; flex-direction: column; gap: var(--sys-space-fixed-400);
+      min-width: 0; padding-inline: var(--sys-space-relative-2xs);
     }
     .section-model { display: flex; flex-direction: column; }
-    .model-combo { display: flex; flex-direction: column; gap: 12px; }
+    .model-combo { display: flex; flex-direction: column; gap: var(--sys-space-relative-sm); }
     .model-label {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 16px; line-height: 24px; color: var(--text-muted);
+      font-size: var(--sys-fs-copy-order1); line-height: var(--sys-lh-copy-order1); color: var(--text-muted);
     }
-    .select-group { display: flex; gap: 12px; }
+    .select-group { display: flex; gap: var(--sys-space-relative-sm); }
     .select-group > div { flex: 1 1 0; min-width: 0; }
     .select-sub-label {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 14px; line-height: 20px; color: var(--text-muted);
-      padding-bottom: 8px; display: block;
+      font-size: var(--sys-fs-label-order2); line-height: var(--sys-lh-label-order2); color: var(--text-muted);
+      padding-bottom: var(--sys-space-relative-xs); display: block;
     }
 
     /* ── SELECT ─────────────────────────────────────────────────────────── */
     .select-wrapper { position: relative; width: 100%; }
     .select-field {
-      width: 100%; height: 48px;
-      background: var(--surface-input);
-      border: 1px solid var(--border-input);
+      width: 100%; height: var(--sys-space-fixed-600);
+      background-color: var(--surface-input);
+      border: 0; box-shadow: 0 0 0 1px var(--border-input);
       border-radius: var(--radius-input);
-      padding: 12px 48px 12px 12px;
+      padding: var(--sys-space-relative-sm) var(--sys-space-fixed-600) var(--sys-space-relative-sm) var(--sys-space-relative-sm);
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
       font-weight: 400;
-      font-size: 16px; line-height: 20px;
+      font-size: var(--sys-fs-label-order1); line-height: var(--sys-lh-label-order1);
       color: var(--text-primary);
       appearance: none; -webkit-appearance: none; cursor: pointer;
+      transition-property: background-color, box-shadow;
+      transition-duration: var(--transition-duration);
+      transition-timing-function: var(--transition-easing);
     }
-    .select-field:focus { outline: none; }
-    .select-field option { background: #1e2433; color: var(--text-primary); }
-    .select-field optgroup { background: #1e2433; color: var(--text-muted); font-style: normal; font-size: 13px; }
+    .select-field:hover { background-color: var(--surface-input-hover); }
+    .select-field:focus-visible { box-shadow: 0 0 0 1px var(--border-input-focus); }
+    .select-field option { background: var(--surface-hover); color: var(--text-primary); }
+    .select-field optgroup { background: var(--surface-hover); color: var(--text-muted); font-style: normal; }
     .select-chevron {
-      position: absolute; right: 16px; top: 50%;
+      position: absolute; right: var(--sys-space-relative-md); top: 50%;
       transform: translateY(-50%);
-      width: 24px; height: 24px; pointer-events: none;
+      width: var(--sys-space-fixed-300); height: var(--sys-space-fixed-300); pointer-events: none;
       display: flex; align-items: center; justify-content: center;
     }
-    .select-chevron img { width: 24px; height: 24px; }
+    .select-chevron img { width: var(--sys-space-fixed-300); height: var(--sys-space-fixed-300); }
 
     /* ── CAR + CONSUMPTION ──────────────────────────────────────────────── */
     .car-wrapper { display: flex; flex-direction: column; margin-top: 38px; }
@@ -503,39 +543,42 @@
     }
     .car-img-box img { display: block; width: 267px; max-width: 100%; height: auto; }
     .cons-data {
-      margin-top: 8px;
+      margin-top: var(--sys-space-relative-xs);
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 14px; line-height: 24px; letter-spacing: 0; font-weight: 400;
+      font-size: var(--sys-fs-copy-order2); line-height: var(--sys-lh-copy-order2); letter-spacing: 0; font-weight: 400;
       color: var(--text-muted);
     }
+    /* Text button: underlined; hover/pressed take the underline to 70% (DS3 core-control transition) */
     .link-btn {
-      display: inline-block; background: none; border: 0; padding: 0 0 2px; margin-top: 1px; cursor: pointer;
+      display: inline-block; background: none; border: 0; padding: 0 0 var(--sys-space-fixed-25); margin-top: 1px; cursor: pointer;
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 14px; line-height: 24px; font-weight: 400; text-align: left;
+      font-size: var(--sys-fs-copy-order2); line-height: var(--sys-lh-copy-order2); font-weight: 400; text-align: left;
       color: var(--text-muted);
       text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px;
       text-decoration-color: var(--text-primary);
+      transition-property: color, text-decoration-color;
+      transition-duration: var(--transition-duration);
+      transition-timing-function: var(--transition-easing);
     }
-    .link-btn:hover { color: var(--text-primary); }
-    .link-btn:focus-visible { box-shadow: 0 0 0 2px inset; }
+    .link-btn:hover, .link-btn:active { text-decoration-color: var(--text-muted); }
 
     /* ── RESULT CARD ────────────────────────────────────────────────────── */
     .section-result {
       background: var(--surface-card);
       border-radius: var(--radius-card);
-      padding: 26px 24px 33px;
+      padding: 26px var(--sys-space-relative-lg) 33px;
     }
-    .result-headline { height: 24px; display: flex; align-items: center; }
+    .result-headline { height: var(--sys-space-relative-lg); display: flex; align-items: center; }
     .result-label {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 16px; line-height: 24px; letter-spacing: 0px;
+      font-size: var(--sys-fs-copy-order1); line-height: var(--sys-lh-copy-order1); letter-spacing: 0px;
       font-stretch: 105%; font-weight: 400;
       color: var(--text-muted); text-decoration: none;
     }
-    .result-label .question-end .info-btn { margin: 0 -12px 0 0; vertical-align: middle; }
+    .result-label .question-end .info-btn { margin: 0 calc(var(--sys-space-relative-sm) * -1) 0 0; vertical-align: middle; }
     .result-value {
       font-family: var(--font-headline);
       font-variation-settings: 'wdth' 130, 'wght' 400;
@@ -545,7 +588,8 @@
     }
     .slot-digit { display: inline-block; overflow: hidden; height: 1em; vertical-align: top; }
     .slot-digit[hidden] { display: none; }
-    .slot-reel { display: flex; flex-direction: column; transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+    /* digit reels slide together: transform 1s ease, no stagger */
+    .slot-reel { display: flex; flex-direction: column; transition: transform var(--duration-reel) var(--easing-reel); }
     .slot-reel span { display: block; height: 1em; line-height: 1; text-align: center; }
     .range-unit {
       font-family: var(--font-headline);
@@ -557,18 +601,18 @@
     /* ── STICKY RESULT BAR (below 1024px) ───────────────────────────────── */
     .result-sticky {
       position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
-      padding: 16px 32px;
-      background: rgba(154, 163, 177, 0.1);
+      padding: var(--sys-space-relative-md) var(--sys-space-fixed-400);
+      background: var(--surface-card);
       -webkit-backdrop-filter: blur(60px); backdrop-filter: blur(60px);
-      border-top: 1px solid #dfe4e8;
-      transform: translateY(100%); transition: transform 250ms cubic-bezier(0.75, 0.02, 0.5, 1);
+      border-top: 1px solid var(--border-sticky);
+      transform: translateY(100%); transition: transform var(--transition-duration) var(--transition-easing);
       pointer-events: none;
     }
     .result-sticky.is-visible { transform: none; pointer-events: auto; }
     .result-sticky-label {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 16px; line-height: 24px; color: var(--text-muted);
+      font-size: var(--sys-fs-copy-order1); line-height: var(--sys-lh-copy-order1); color: var(--text-muted);
     }
     .result-sticky-value {
       font-family: var(--font-headline);
@@ -584,18 +628,19 @@
     .footnote-marker, .footnote-text {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 12px; line-height: 20px; font-weight: 400; letter-spacing: 0;
+      font-size: var(--sys-fs-copy-order3); line-height: var(--sys-lh-copy-order3); font-weight: 400; letter-spacing: 0;
       color: var(--text-muted);
     }
 
     /* ── FAQ ────────────────────────────────────────────────────────────── */
     .faq { padding-bottom: var(--faq-gap); }
+    /* left-aligned text inside a centred box (box width: see the breakpoints below) */
     .faq-heading {
-      margin-top: 28px; margin-bottom: var(--faq-gap);
+      margin-top: var(--sys-space-relative-xl); margin-bottom: var(--faq-gap);
       font-family: var(--font-headline);
       font-variation-settings: 'wdth' 130, 'wght' 400;
       font-size: var(--sys-fs-headline-order2); line-height: var(--sys-lh-headline-order2);
-      font-weight: 400; letter-spacing: 0; color: var(--text-primary);
+      font-weight: 400; letter-spacing: 0; text-align: left; color: var(--text-primary);
     }
     .faq-list {
       width: 62.5vw; max-width: 1200px; margin-inline: auto;
@@ -603,33 +648,74 @@
     }
     .faq-row { border-top: 1px solid var(--border-card); display: flex; }
     .faq-question {
-      display: flex; align-items: center; gap: 8px; width: 100%;
-      padding: 16px; background: none; border: 0; cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: var(--sys-space-relative-xs); width: 100%;
+      padding: var(--sys-space-relative-md); background-color: transparent; border: 0; cursor: pointer; text-align: left;
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 16px; line-height: 20px; font-weight: 400; letter-spacing: 0;
+      font-size: var(--sys-fs-label-order1); line-height: var(--sys-lh-label-order1); font-weight: 400; letter-spacing: 0;
       color: var(--text-primary);
-      transition: color 250ms;
+      transition: color var(--transition-duration) ease, background-color var(--transition-duration) ease;
     }
-    .faq-question:hover, .faq-question:focus-visible { background: #404a59; color: var(--text-muted); }
-    .faq-question:focus-visible { box-shadow: 0 0 0 2px inset; }
-    .faq-chevron { flex: none; margin-left: auto; width: 24px; height: 24px; transition: transform 250ms; }
+    /* hover / pressed: #2c343f, text 70%; focus after a click: #404a59 (beats hover); keyboard focus adds the ring (global :focus-visible) */
+    .faq-question:hover, .faq-question:active { background-color: var(--surface-hover); color: var(--text-muted); }
+    .faq-question:focus:not(:active) { background-color: var(--surface-selected); color: var(--text-muted); }
+    .faq-chevron { flex: none; margin-left: auto; width: var(--sys-space-fixed-300); height: var(--sys-space-fixed-300); transition: transform 0.2s ease-in; }
     .faq-question[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); }
-    .faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 250ms; }
+    .faq-panel { display: grid; grid-template-rows: 0fr; transition: all var(--transition-duration) ease; }
     .faq-panel.is-open { grid-template-rows: 1fr; }
     .faq-panel-inner {
       min-height: 0; overflow: hidden; visibility: hidden;
-      padding: 0 16px;
-      transition: padding 250ms, visibility 0s linear 250ms;
+      padding: 0 var(--sys-space-relative-md);
+      transition: padding var(--transition-duration) ease, visibility 0s linear var(--transition-duration);
     }
-    .faq-panel.is-open .faq-panel-inner { visibility: visible; padding: 16px; transition: padding 250ms, visibility 0s; }
+    .faq-panel.is-open .faq-panel-inner { visibility: visible; padding: var(--sys-space-relative-md); transition: padding var(--transition-duration) ease, visibility 0s; }
     .faq-answer {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
-      font-size: 16px; line-height: 24px; font-weight: 400; color: var(--text-muted);
+      font-size: var(--sys-fs-copy-order1); line-height: var(--sys-lh-copy-order1); font-weight: 400; color: var(--text-muted);
     }
+
+    /* ── INFO LAYER (modal opened by the info buttons) ──────────────────── */
+    .info-layer {
+      position: fixed; inset: 0; z-index: 1000;
+      display: flex; align-items: flex-end; justify-content: center;   /* bottom sheet below 1024 */
+    }
+    .info-layer[hidden] { display: none; }
+    .info-layer-shader {
+      position: absolute; inset: 0; background-color: var(--shader);
+      animation: info-layer-fade 0.24s ease both;
+    }
+    @keyframes info-layer-fade { from { opacity: 0; } to { opacity: 1; } }
+    .info-layer-dialog {
+      --layer-inset: calc(var(--sys-page-margin) + 1px);
+      position: relative; width: 100%; max-height: 100%; overflow-y: auto;
+      border: 0; border-radius: var(--radius-card);
+      background-image: var(--gradient-layer);
+      padding: var(--layer-inset) var(--layer-inset) 82px;
+    }
+    .info-layer-dialog:focus { outline: auto 1px var(--focus-ring); }
+    .info-layer-text {
+      font-family: var(--font-copy);
+      font-variation-settings: 'wdth' 105, 'wght' 400;
+      font-size: var(--sys-fs-copy-order1); line-height: var(--sys-lh-copy-order1); font-weight: 400;
+      color: var(--text-muted);
+    }
+    .info-layer-link {
+      display: block; margin-top: 15px; width: fit-content;
+      font-family: var(--font-copy);
+      font-variation-settings: 'wdth' 105, 'wght' 400;
+      font-size: var(--sys-fs-copy-order2); line-height: var(--sys-lh-copy-order2); font-weight: 400;
+      color: var(--text-primary);
+      text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px;
+      text-decoration-color: var(--text-primary);
+      transition-property: color, text-decoration-color;
+      transition-duration: var(--transition-duration);
+      transition-timing-function: var(--transition-easing);
+    }
+    .info-layer-link:hover, .info-layer-link:active { color: var(--text-muted); text-decoration-color: var(--text-muted); }
+    .info-layer-close { position: absolute; top: 9px; right: 9px; color: var(--text-primary); }
     @media (prefers-reduced-motion: reduce) {
-      .faq-chevron, .faq-panel, .faq-panel-inner, .result-sticky, .slot-reel { transition: none; }
+      .faq-chevron, .faq-panel, .faq-panel-inner, .result-sticky, .slot-reel, .info-layer-shader { transition: none; animation: none; }
     }
 
     /* ── TYPOGRAPHY TOKENS ─────────────────────────────────────────────── */
@@ -685,17 +771,16 @@
     }
     @media (min-width: 768px) {
       .page-layout { --footnote-inset: 35px; }
-      .header { height: 48px; margin-bottom: 50px; }
+      .header { height: var(--sys-space-fixed-600); margin-bottom: 50px; }
       .header h1 { margin-top: calc(29px - var(--sys-lh-headline-order2) / 2); }
-      .select-group { gap: 28px; }
+      .select-group { gap: var(--sys-space-relative-xl); }
       .car-img-box img { width: 640px; }
       /* tiles share the row equally, icon above label */
       .btn-loc-group, .btn-type-group, .btn-kw-group { overflow: visible; margin-right: 0; padding: 0; }
-      .btn-loc, .btn-type, .btn-kw { flex: 1 1 0; min-width: 0; padding: 12px; white-space: normal; hyphens: auto; overflow-wrap: break-word; }
+      .btn-loc, .btn-type, .btn-kw { flex: 1 1 0; min-width: 0; padding: var(--sys-space-relative-sm); white-space: normal; hyphens: auto; overflow-wrap: break-word; }
       .btn-loc, .btn-type { flex-direction: column; }
-      .tile-icon { width: 24px; height: 24px; }
+      .tile-icon { width: var(--sys-space-fixed-300); height: var(--sys-space-fixed-300); }
       .tile-icon img { width: auto; height: auto; max-width: none; max-height: none; }
-      /* sticky bar: slightly larger value */
     }
     @media (min-width: 1024px) {
       .page-layout { --footnote-inset: 3px; }
@@ -706,23 +791,30 @@
       .section-input {
         background: var(--canvas);
         border: 1px solid var(--border-card);
-        border-radius: 28px;
+        border-radius: var(--radius-panel);
         padding: var(--sys-space-relative-2xl);
       }
       .section-output { gap: var(--sys-space-relative-xl); }
-      .select-group { gap: 12px; }
+      .select-group { gap: var(--sys-space-relative-sm); }
       .result-sticky { display: none; }
-      .faq-heading { margin-top: 36px; width: 81.84vw; margin-inline: auto; }
+      /* info layer: centred dialog */
+      .info-layer { align-items: center; }
+      .info-layer-dialog {
+        --layer-inset: calc(var(--sys-space-fixed-800) + 1px);
+        width: min(1024px, 100%); max-height: calc(100% - var(--sys-space-fixed-800));
+        padding-bottom: 70px;
+      }
+      .faq-heading { margin-top: var(--sys-space-fixed-450); width: 81.84vw; margin-inline: auto; }
     }
     @media (min-width: 1440px) {
-      .select-group { gap: 16px; }
+      .select-group { gap: var(--sys-space-relative-md); }
       .faq-heading { width: calc(100vw * 17 / 24); }
     }
     @media (min-width: 1920px) {
       .header { margin-bottom: 81px; }
       .header h1 { margin-top: calc(30px - var(--sys-lh-headline-order2) / 2); }
-      .select-group { gap: 24px; }
-      .faq-heading { margin-top: 80px; }
+      .select-group { gap: var(--sys-space-relative-lg); }
+      .faq-heading { margin-top: var(--sys-space-fixed-1000); }
     }
   </style>
 </head>
@@ -796,68 +888,68 @@
       <!-- Q1: Charging location -->
       <div class="combo">
         <div class="question">
-          <span class="question-text">Where would you like to charge your <span class="question-end">vehicle?<button class="info-btn" aria-label="More info">
+          <span class="question-text">Where would you like to charge your <span class="question-end">vehicle?<button class="info-btn" data-info="loc" aria-haspopup="dialog" aria-label="More information: charging location">
             <img src="assets/icons/info.svg" width="16" height="16" alt="">
           </button></span></span>
         </div>
-        <div class="btn-loc-group">
-          <button class="btn-loc" data-loc="home" aria-pressed="false">
+        <div class="btn-loc-group" role="radiogroup" aria-label="Charging location">
+          <label class="btn-loc"><input class="tile-input" type="radio" name="loc" value="home">
             <span class="tile-icon"><img src="assets/icons/home.svg" width="19" height="14" alt=""></span>
             <span>At home</span>
-          </button>
-          <button class="btn-loc" data-loc="workplace" aria-pressed="false">
+          </label>
+          <label class="btn-loc"><input class="tile-input" type="radio" name="loc" value="workplace">
             <span class="tile-icon"><img src="assets/icons/work.svg" width="14" height="20" alt=""></span>
             <span>Workplace</span>
-          </button>
-          <button class="btn-loc" data-loc="public" aria-pressed="false">
+          </label>
+          <label class="btn-loc"><input class="tile-input" type="radio" name="loc" value="public">
             <span class="tile-icon"><img src="assets/icons/city.svg" width="20" height="20" alt=""></span>
             <span>Public</span>
-          </button>
-          <button class="btn-loc selected" data-loc="motorway" aria-pressed="true">
+          </label>
+          <label class="btn-loc"><input class="tile-input" type="radio" name="loc" value="motorway" checked>
             <span class="tile-icon"><img src="assets/icons/motorway.svg" width="22" height="22" alt=""></span>
             <span>Motorway</span>
-          </button>
+          </label>
         </div>
       </div>
 
       <!-- Q2: Charger type -->
       <div class="combo">
         <div class="question">
-          <span class="question-text">Which charger type will you <span class="question-end">use?<button class="info-btn" aria-label="More info">
+          <span class="question-text">Which charger type will you <span class="question-end">use?<button class="info-btn" data-info="type" aria-haspopup="dialog" aria-label="More information: charger type">
             <img src="assets/icons/info.svg" width="16" height="16" alt="">
           </button></span></span>
         </div>
-        <div class="btn-type-group">
-          <button class="btn-type disabled" data-type="household" aria-pressed="false">
+        <div class="btn-type-group" role="radiogroup" aria-label="Charger type">
+          <label class="btn-type"><input class="tile-input" type="radio" name="type" value="household" disabled>
             <span class="tile-icon"><img src="assets/icons/household.svg" width="18" height="16" alt=""></span>
             <span>Household socket</span>
-          </button>
-          <button class="btn-type disabled" data-type="wallbox" aria-pressed="false">
+          </label>
+          <label class="btn-type"><input class="tile-input" type="radio" name="type" value="wallbox" disabled>
             <span class="tile-icon"><img src="assets/icons/wallbox.svg" width="21" height="22" alt=""></span>
             <span>Wallbox (AC)</span>
-          </button>
-          <button class="btn-type selected" data-type="dc" aria-pressed="true">
+          </label>
+          <label class="btn-type"><input class="tile-input" type="radio" name="type" value="dc" checked>
             <span class="tile-icon"><img src="assets/icons/charging-station.svg" width="22" height="22" alt=""></span>
             <span>Charging Station (DC)</span>
-          </button>
+          </label>
         </div>
       </div>
 
       <!-- Q3: Charging power -->
       <div class="combo">
         <div class="question">
-          <span class="question-text">What will the charging power be <span class="question-end">at?<button class="info-btn" aria-label="More info">
+          <span class="question-text">What will the charging power be <span class="question-end">at?<button class="info-btn" data-info="power" aria-haspopup="dialog" aria-label="More information: charging power">
             <img src="assets/icons/info.svg" width="16" height="16" alt="">
           </button></span></span>
         </div>
-        <div class="btn-kw-group">
-          <button class="btn-kw disabled" data-kw="2.3" aria-pressed="false"><span>2.3 kW</span></button>
-          <button class="btn-kw disabled" data-kw="3.6" aria-pressed="false"><span>3.6 kW</span></button>
-          <button class="btn-kw disabled" data-kw="7.2" aria-pressed="false"><span>7.2 kW</span></button>
-          <button class="btn-kw disabled" data-kw="11" aria-pressed="false"><span>11 kW</span></button>
-          <button class="btn-kw" data-kw="50" aria-pressed="false"><span>50 kW</span></button>
-          <button class="btn-kw disabled" data-kw="150" aria-pressed="false"><span>150 kW</span></button>
-          <button class="btn-kw selected" data-kw="350" aria-pressed="true"><span>350 kW</span></button>
+        <div class="btn-kw-group" role="radiogroup" aria-label="Charging power">
+          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="2.3" disabled><span>2.3 kW</span></label>
+          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="3.6" disabled><span>3.6 kW</span></label>
+          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="7.2" disabled><span>7.2 kW</span></label>
+          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="11" disabled><span>11 kW</span></label>
+          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="50"><span>50 kW</span></label>
+          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="150" disabled><span>150 kW</span></label>
+          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="350" checked><span>350 kW</span></label>
         </div>
       </div>
 
@@ -866,7 +958,7 @@
       <!-- Q4: Charge level (dual slider) -->
       <div class="combo">
         <div class="question">
-          <span class="question-text">What is your current and desired charge <span class="question-end">level?<button class="info-btn" aria-label="More info">
+          <span class="question-text">What is your current and desired charge <span class="question-end">level?<button class="info-btn" data-info="level" aria-haspopup="dialog" aria-label="More information: charge level">
             <img src="assets/icons/info.svg" width="16" height="16" alt="">
           </button></span></span>
         </div>
@@ -892,7 +984,7 @@
       <!-- Q5: Outside temperature -->
       <div class="combo">
         <div class="question">
-          <span class="question-text">What is the outside <span class="question-end">temperature?<button class="info-btn" aria-label="More info">
+          <span class="question-text">What is the outside <span class="question-end">temperature?<button class="info-btn" data-info="temp" aria-haspopup="dialog" aria-label="More information: outside temperature">
             <img src="assets/icons/info.svg" width="16" height="16" alt="">
           </button></span></span>
         </div>
@@ -915,7 +1007,7 @@
       <!-- Q6: Battery pre-conditioning -->
       <div class="combo">
         <div class="question">
-          <span class="question-text">Is the charging station approached with active route guidance so that the battery can be pre-conditioned for the upcoming <span class="question-end">charge?<button class="info-btn" aria-label="More info">
+          <span class="question-text">Is the charging station approached with active route guidance so that the battery can be pre-conditioned for the upcoming <span class="question-end">charge?<button class="info-btn" data-info="precond" aria-haspopup="dialog" aria-label="More information: battery pre-conditioning">
             <img src="assets/icons/info.svg" width="16" height="16" alt="">
           </button></span></span>
         </div>
@@ -992,7 +1084,7 @@
       <!-- Result -->
       <div class="section-result">
         <div class="result-headline">
-          <span class="result-label">Estimated charging <span class="question-end">time<sup class="fn-ref">1</sup><button class="info-btn" aria-label="More info">
+          <span class="result-label">Estimated charging <span class="question-end">time<sup class="fn-ref">1</sup><button class="info-btn" data-info="result" aria-haspopup="dialog" aria-label="More information: estimated charging time">
             <img src="assets/icons/info.svg" width="16" height="16" alt="">
           </button></span></span>
         </div>
@@ -1055,6 +1147,18 @@
     </div>
   </section>
 </div><!-- /page-layout -->
+
+<!-- Info layer: opened by the info buttons (modal: shader + dialog, bottom sheet below 1024px) -->
+<div class="info-layer" id="info-layer" hidden>
+  <div class="info-layer-shader" id="info-layer-shader"></div>
+  <div class="info-layer-dialog" id="info-layer-dialog" role="dialog" aria-modal="true" aria-label="More information" tabindex="-1">
+    <p class="info-layer-text" id="info-layer-text"></p>
+    <a class="info-layer-link" id="info-layer-link" href="#faq-heading">For more information, see the FAQ below.</a>
+    <button class="info-btn info-layer-close" id="info-layer-close" type="button" aria-label="Close layer">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 7L17 17M17 7L7 17" stroke="currentColor"/></svg>
+    </button>
+  </div>
+</div>
 
 <!-- Sticky copy of the result (below 1024px; shown while the end of the input panel is still below the viewport) -->
 <div class="result-sticky" id="result-sticky" aria-hidden="true">
@@ -1266,8 +1370,6 @@
         const val = digitVals[digitIdx];
         const reel = node.querySelector('.slot-reel');
         if (node.classList.contains('slot-tens')) node.hidden = hTens === 0;
-        const delay = (3 - digitIdx) * 60;
-        reel.style.transitionDelay = delay + 'ms';
         reel.style.transform = 'translateY(-' + val + 'em)';
         digitIdx++;
       }
@@ -1281,104 +1383,56 @@
     document.getElementById('result-sticky-value').textContent = h + ':' + String(m).padStart(2, '0') + ' h';
   }
 
-  /* ── LOCATION BUTTON INTERACTIONS ── */
+  /* ── TILE GROUPS (radio inputs inside labels: location / charger type / power) ── */
+  const radioOf = (name, value) => document.querySelector('input[name="' + name + '"][value="' + value + '"]');
+  const radiosOf = (name) => document.querySelectorAll('input[name="' + name + '"]');
+
   function selectPower(kw) {
     selectedKW = kw;
-    document.querySelectorAll('.btn-kw').forEach(btn => {
-      const isSelected = parseFloat(btn.dataset.kw) === kw;
-      btn.classList.toggle('selected', isSelected);
-      btn.setAttribute('aria-pressed', String(isSelected));
-    });
+    const input = radioOf('kw', kw);
+    if (input) input.checked = true;
     updateResult();
   }
 
   function selectChargerType(type) {
     chargerTypeIsDC = (type === 'dc');
+    radioOf('type', type).checked = true;
 
-    // Update charger type button selection
-    document.querySelectorAll('.btn-type').forEach(btn => {
-      const isSelected = btn.dataset.type === type;
-      btn.classList.toggle('selected', isSelected);
-      btn.setAttribute('aria-pressed', String(isSelected));
-    });
-
-    // Enable/disable power buttons based on charger type
-    const kwBtns = document.querySelectorAll('.btn-kw');
+    // Enable/disable power steps based on charger type
+    const kwInputs = radiosOf('kw');
     if (type === 'household') {
-      kwBtns.forEach(btn => {
-        const kw = parseFloat(btn.dataset.kw);
-        btn.classList.toggle('disabled', kw > 3.6);
-      });
+      kwInputs.forEach(i => { i.disabled = parseFloat(i.value) > 3.6; });
       selectPower(2.3);
     } else if (type === 'wallbox') {
-      kwBtns.forEach(btn => {
-        const kw = parseFloat(btn.dataset.kw);
-        btn.classList.toggle('disabled', kw < 3.6 || kw > 11);
-      });
+      kwInputs.forEach(i => { const kw = parseFloat(i.value); i.disabled = kw < 3.6 || kw > 11; });
       selectPower(7.2);
     } else {
       // dc
-      kwBtns.forEach(btn => {
-        const kw = parseFloat(btn.dataset.kw);
-        btn.classList.toggle('disabled', kw < 50);
-      });
+      kwInputs.forEach(i => { i.disabled = parseFloat(i.value) < 50; });
       selectPower(150);
     }
   }
 
   function selectLocation(loc) {
-    // Update location button selection
-    document.querySelectorAll('.btn-loc').forEach(btn => {
-      const isSelected = btn.dataset.loc === loc;
-      btn.classList.toggle('selected', isSelected);
-      btn.setAttribute('aria-pressed', String(isSelected));
-    });
+    radioOf('loc', loc).checked = true;
 
-    const typeBtns = document.querySelectorAll('.btn-type');
-
+    const typeInputs = radiosOf('type');
     if (loc === 'home' || loc === 'workplace') {
       // Enable AC types, disable DC
-      typeBtns.forEach(btn => {
-        btn.classList.toggle('disabled', btn.dataset.type === 'dc');
-      });
+      typeInputs.forEach(i => { i.disabled = i.value === 'dc'; });
       selectChargerType('wallbox');
     } else {
       // public or motorway: enable DC, disable AC types
-      typeBtns.forEach(btn => {
-        btn.classList.toggle('disabled', btn.dataset.type !== 'dc');
-      });
+      typeInputs.forEach(i => { i.disabled = i.value !== 'dc'; });
       selectChargerType('dc');
       // For motorway default to 350, public to 150
-      if (loc === 'motorway') {
-        selectPower(350);
-      } else {
-        selectPower(150);
-      }
+      selectPower(loc === 'motorway' ? 350 : 150);
     }
   }
 
-  // Bind location buttons
-  document.querySelectorAll('.btn-loc').forEach(btn => {
-    btn.addEventListener('click', () => selectLocation(btn.dataset.loc));
-  });
-
-  // Bind charger type buttons
-  document.querySelectorAll('.btn-type').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!btn.classList.contains('disabled')) {
-        selectChargerType(btn.dataset.type);
-      }
-    });
-  });
-
-  // Bind power kw buttons
-  document.querySelectorAll('.btn-kw').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!btn.classList.contains('disabled')) {
-        selectPower(parseFloat(btn.dataset.kw));
-      }
-    });
-  });
+  radiosOf('loc').forEach(i => i.addEventListener('change', () => selectLocation(i.value)));
+  radiosOf('type').forEach(i => i.addEventListener('change', () => selectChargerType(i.value)));
+  radiosOf('kw').forEach(i => i.addEventListener('change', () => selectPower(parseFloat(i.value))));
 
   /* ── MODEL CONFIG ── */
   function updateConsumption() {
@@ -1440,6 +1494,59 @@
       document.getElementById(btn.getAttribute('aria-controls')).classList.toggle('is-open', open);
     });
   });
+
+  /* ── INFO LAYER (opened by the info buttons) ── */
+  const INFO_TEXT = {
+    loc: 'Depending on where you want to charge your electric vehicle, there are different charging options. Please select the charging point you want to use: at home on a 2.3 kW socket or a 7.2 kW or 11 kW wall box, at work or in public at a 7.2 kW, 11 kW or 50 kW charging station, or on the motorway at 50 kW or up to 350 kW charging points. Please note that, among other things, the journey to the charging station also determines how much the battery has warmed up. The battery temperature at the start of charging influences the charging time. In general, the battery charges fastest at a battery temperature of 20-30 degrees Celsius, while the charging time increases at low temperatures.',
+    type: 'Choose the charger you will use. Household sockets and wall boxes charge with alternating current (AC); charging stations in public and on the motorway charge with direct current (DC) and are much faster.',
+    power: 'Please select the available charging power.',
+    level: 'Set the current and the desired state of charge with the two handles. The charging time is calculated for the range between them.',
+    temp: 'Find out here how the outside temperature affects the charging time by setting the respective outside temperature with the slider. In general, the high-voltage battery charges fastest at a temperature of 20-30 degrees Celsius, while the charging time increases at low temperatures.',
+    precond: 'If the charging station is approached with active route guidance, the vehicle can bring the battery to a suitable temperature in advance. This shortens the charging time, especially in cold weather.',
+    result: 'This is the simulated charging time based on the selected parameters.',
+  };
+  (function () {
+    const layer = document.getElementById('info-layer');
+    const dialog = document.getElementById('info-layer-dialog');
+    const text = document.getElementById('info-layer-text');
+    const link = document.getElementById('info-layer-link');
+    const closeBtn = document.getElementById('info-layer-close');
+    let trigger = null;
+
+    function open(btn) {
+      trigger = btn;
+      text.textContent = INFO_TEXT[btn.dataset.info] || '';
+      layer.hidden = false;
+      dialog.focus();
+    }
+    function close() {
+      if (layer.hidden) return;
+      layer.hidden = true;
+      if (trigger) trigger.focus();
+      trigger = null;
+    }
+
+    document.querySelectorAll('.info-btn[data-info]').forEach(btn => btn.addEventListener('click', () => open(btn)));
+    closeBtn.addEventListener('click', close);
+    document.getElementById('info-layer-shader').addEventListener('click', close);
+    link.addEventListener('click', (e) => {
+      // jump to the FAQ and close the layer
+      e.preventDefault();
+      layer.hidden = true; trigger = null;
+      const target = document.getElementById('faq-heading');
+      target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({ behavior: 'smooth' });
+    });
+    layer.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+      if (e.key !== 'Tab') return;
+      // focus stays inside the layer: dialog -> link -> close -> link ...
+      const cur = document.activeElement;
+      if (!e.shiftKey && cur === closeBtn) { e.preventDefault(); link.focus(); }
+      else if (e.shiftKey && (cur === link || cur === dialog)) { e.preventDefault(); closeBtn.focus(); }
+    });
+  })();
 
   /* ── STICKY RESULT BAR (<1024px): visible while the end of the input panel is still below the viewport ── */
   (function () {
