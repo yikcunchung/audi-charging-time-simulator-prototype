@@ -944,11 +944,9 @@
         </div>
         <div class="btn-kw-group" role="radiogroup" aria-label="Charging power">
           <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="2.3" disabled><span>2.3 kW</span></label>
-          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="3.6" disabled><span>3.6 kW</span></label>
           <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="7.2" disabled><span>7.2 kW</span></label>
-          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="11" disabled><span>11 kW</span></label>
           <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="50"><span>50 kW</span></label>
-          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="150" disabled><span>150 kW</span></label>
+          <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="150"><span>150 kW</span></label>
           <label class="btn-kw"><input class="tile-input" type="radio" name="kw" value="350" checked><span>350 kW</span></label>
         </div>
       </div>
@@ -1401,10 +1399,10 @@
     // Enable/disable power steps based on charger type
     const kwInputs = radiosOf('kw');
     if (type === 'household') {
-      kwInputs.forEach(i => { i.disabled = parseFloat(i.value) > 3.6; });
+      kwInputs.forEach(i => { i.disabled = parseFloat(i.value) !== 2.3; });
       selectPower(2.3);
     } else if (type === 'wallbox') {
-      kwInputs.forEach(i => { const kw = parseFloat(i.value); i.disabled = kw < 3.6 || kw > 11; });
+      kwInputs.forEach(i => { i.disabled = parseFloat(i.value) > 7.2; });
       selectPower(7.2);
     } else {
       // dc
@@ -1497,7 +1495,7 @@
 
   /* ── INFO LAYER (opened by the info buttons) ── */
   const INFO_TEXT = {
-    loc: 'Depending on where you want to charge your electric vehicle, there are different charging options. Please select the charging point you want to use: at home on a 2.3 kW socket or a 7.2 kW or 11 kW wall box, at work or in public at a 7.2 kW, 11 kW or 50 kW charging station, or on the motorway at 50 kW or up to 350 kW charging points. Please note that, among other things, the journey to the charging station also determines how much the battery has warmed up. The battery temperature at the start of charging influences the charging time. In general, the battery charges fastest at a battery temperature of 20-30 degrees Celsius, while the charging time increases at low temperatures.',
+    loc: 'Depending on where you want to charge your electric vehicle, there are different charging options. Please select the charging point you want to use: at home on a 2.3 kW socket or a 7.2 kW wall box, at work or in public at a 7.2 kW or 50 kW charging station, or on the motorway at 50 kW, 150 kW or up to 350 kW charging points. Please note that, among other things, the journey to the charging station also determines how much the battery has warmed up. The battery temperature at the start of charging influences the charging time. In general, the battery charges fastest at a battery temperature of 20-30 degrees Celsius, while the charging time increases at low temperatures.',
     type: 'Choose the charger you will use. Household sockets and wall boxes charge with alternating current (AC); charging stations in public and on the motorway charge with direct current (DC) and are much faster.',
     power: 'Please select the available charging power.',
     level: 'Set the current and the desired state of charge with the two handles. The charging time is calculated for the range between them.',
