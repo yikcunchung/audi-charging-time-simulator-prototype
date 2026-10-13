@@ -514,8 +514,12 @@
       font-variation-settings: 'wdth' 105, 'wght' 400;
       font-size: var(--sys-fs-copy-order1); line-height: var(--sys-lh-copy-order1); color: var(--text-muted);
     }
-    .select-group { display: flex; gap: var(--sys-space-relative-sm); }
-    .select-group > div { flex: 1 1 0; min-width: 0; }
+    /* live layout: three columns (1fr, 4% gap, 1fr); Model is always the first column and Powertrain the third,
+       so a lone Model select keeps its half width exactly like the live page */
+    .select-group { display: grid; grid-template-columns: minmax(0, 1fr) 4% minmax(0, 1fr); }
+    .select-group > div { min-width: 0; }
+    .select-group > div:first-child { grid-column: 1; }
+    .select-group > div:last-child { grid-column: 3; }
     .select-sub-label {
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
@@ -814,7 +818,6 @@
       .page-layout { --footnote-inset: 35px; }
       .header { height: var(--sys-space-fixed-600); margin-bottom: 50px; }
       .header h1 { margin-top: calc(29px - var(--sys-lh-headline-order2) / 2); }
-      .select-group { gap: var(--sys-space-relative-xl); }
       .car-img-box img { width: 640px; }
       /* tiles share the row equally, icon above label */
       .btn-loc-group, .btn-type-group, .btn-kw-group { overflow: visible; margin-right: 0; padding: 0; }
@@ -836,19 +839,16 @@
         padding: var(--sys-space-relative-2xl);
       }
       .section-output { gap: var(--sys-space-relative-xl); }
-      .select-group { gap: var(--sys-space-relative-sm); }
       .result-sticky { display: none; }
       .info-layer-dialog { border-radius: var(--radius-card); }
       .faq-heading { margin-top: var(--sys-space-fixed-450); width: 81.84vw; margin-inline: auto; }
     }
     @media (min-width: 1440px) {
-      .select-group { gap: var(--sys-space-relative-md); }
       .faq-heading { width: calc(100vw * 17 / 24); }
     }
     @media (min-width: 1920px) {
       .header { margin-bottom: 81px; }
       .header h1 { margin-top: calc(30px - var(--sys-lh-headline-order2) / 2); }
-      .select-group { gap: var(--sys-space-relative-lg); }
       .faq-heading { margin-top: var(--sys-space-fixed-1000); }
     }
   </style>
