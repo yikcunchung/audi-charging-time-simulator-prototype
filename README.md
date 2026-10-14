@@ -9,7 +9,7 @@ Open `index.html` in a browser. There is nothing to install or build, and it wor
 | File | What it is |
 |---|---|
 | `index.html` | The default page, as on the live tool |
-| `index-cta-group.html` | Work in progress: result section with call-to-action buttons. Not the default. |
+| `index-section-group.html` | Work in progress, needs further development: result section with call-to-action buttons, in the "Section Group" layout the client prefers (buttons in their own card). Figma: page `[Range] Add Next Step CTAs`, section "Section Group (Client Preferred)". |
 | `assets/` | Fonts, icons and model images |
 
 ## What you can try
