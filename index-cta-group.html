@@ -97,6 +97,23 @@
       --sys-fs-headline-order3: 20px;  --sys-lh-headline-order3: 32px;
       --sys-fs-headline-order4: 16px;  --sys-lh-headline-order4: 24px;
       --sys-fs-copy-order2:  0.875rem;
+
+      /* colour tokens added for the colour clean-up (values identical to the old literals) */
+      --surface-selected:         #404a59;
+      --surface-hover:            #2c343f;
+      --surface-tile-start:       #232a34;
+      --surface-tile-end:         #181d25;
+      --border-subtle:            rgba(219,223,230,0.2);
+      --text-disabled:            rgba(252,252,253,0.1);
+      --surface-distr-seg-alt:    rgba(24,29,37,0.8);   /* second segment of the distribution bar */
+      --surface-option:           #1e2433;   /* native select option/optgroup background */
+      --surface-action:           #657081;   /* primary button fill (Sem/Color/Action/Primary/Surface/Fill/Default) */
+      --surface-action-hover:     #758292;   /* primary button fill on hover */
+      --surface-btn-hover-start:  #2b3344;   /* button hover gradient, top */
+      --surface-btn-hover-end:    #1e2530;   /* button hover gradient, bottom */
+      --border-btn-hover:         rgba(252,252,253,0.15);   /* button border on hover */
+      --surface-btn-disabled:     rgba(55,64,78,0.2);   /* disabled button fill */
+      --text-btn-disabled:        rgba(154,163,177,0.3);   /* disabled button label */
     }
 
     /* ── CUSTOM MEDIA (CSS MQ Level 5 — postcss-custom-media compatible) ─── */
@@ -188,7 +205,6 @@
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
       color: var(--text-primary);
-      -webkit-font-smoothing: antialiased;
     }
     body {
       max-width: var(--max-content-width);
@@ -254,7 +270,7 @@
       font-variation-settings: 'wdth' 105, 'wght' 600;
       font-size: 16px; line-height: 24px; letter-spacing: 0px;
       font-stretch: 105%; font-weight: 600;
-      color: rgba(252, 252, 253, 0.7); text-decoration: none;
+      color: var(--text-muted); text-decoration: none;
     }
 
     .info-btn {
@@ -279,7 +295,7 @@
       position: relative;
     }
     .distr-seg:nth-child(2) {
-      background: rgba(24,29,37,0.8);
+      background: var(--surface-distr-seg-alt);
       border-left: 1px dashed var(--border-card);
       border-right: 1px dashed var(--border-card);
     }
@@ -299,9 +315,9 @@
       box-sizing: border-box;
       align-items: center; justify-content: center;
       width: 28px; height: 28px;
-      border: 1px solid rgb(77, 87, 102); border-radius: 100%;
-      background-color: rgb(16, 19, 25);
-      color: rgba(252, 252, 253, 0.7);
+      border: 1px solid var(--border-distr); border-radius: 100%;
+      background-color: var(--canvas);
+      color: var(--text-muted);
       cursor: grab;
       overflow: hidden;
     }
@@ -332,12 +348,12 @@
     .radio-visual {
       display: block; width: 24px; height: 24px;
       border-radius: 50%;
-      background: rgba(24,29,37,0.6);
-      border: 1px solid rgba(219,223,230,0.6);
+      background: var(--surface-input);
+      border: 1px solid var(--border-input);
       position: relative; flex-shrink: 0; pointer-events: none;
     }
     .radio-control input[type="radio"]:checked ~ .radio-visual {
-      background: #404A59;
+      background: var(--surface-selected);
     }
     .radio-control input[type="radio"]:checked ~ .radio-visual::after {
       content: '';
@@ -345,7 +361,7 @@
       transform: translate(-50%, -50%);
       width: 12px; height: 12px;
       border-radius: 50%;
-      background: rgba(252,252,253,0.7);
+      background: var(--text-muted);
     }
     .radio-label {
       font-family: var(--font-copy);
@@ -371,8 +387,8 @@
       appearance: none; -webkit-appearance: none; cursor: pointer;
     }
     .select-field:focus { outline: none; }
-    .select-field option { background: #1e2433; color: var(--text-primary); }
-    .select-field optgroup { background: #1e2433; color: var(--text-muted); font-style: normal; font-size: 13px; }
+    .select-field option { background: var(--surface-option); color: var(--text-primary); }
+    .select-field optgroup { background: var(--surface-option); color: var(--text-muted); font-style: normal; font-size: 13px; }
     .select-chevron {
       position: absolute; right: 12px; top: 50%;
       transform: translateY(-50%);
@@ -413,13 +429,13 @@
       appearance: none; -webkit-appearance: none;
       width: 24px; height: 12px;
       border-radius: 999px;
-      background: #fcfcfd; border: 1px solid #2c343f;
+      background: var(--text-primary); border: 1px solid var(--surface-hover);
       cursor: ew-resize;
     }
     input[type="range"].temp-slider::-moz-range-thumb {
       width: 24px; height: 12px;
       border-radius: 999px;
-      background: #fcfcfd; border: 1px solid #2c343f;
+      background: var(--text-primary); border: 1px solid var(--surface-hover);
       cursor: ew-resize;
     }
     .slider-range-row {
@@ -477,7 +493,7 @@
       font-variation-settings: 'wdth' 105, 'wght' 600;
       font-size: 16px; line-height: 24px; letter-spacing: 0px;
       font-stretch: 105%; font-weight: 600;
-      color: rgba(252, 252, 253, 0.7); text-decoration: none;
+      color: var(--text-muted); text-decoration: none;
     }
     .result-value {
       font-family: var(--font-headline);
@@ -502,17 +518,17 @@
     .btn-primary {
       display: flex; align-items: center; justify-content: center;
       width: 100%; height: 48px;
-      background: #657081;
+      background: var(--surface-action);
       border: none;
       border-radius: 999px;
-      color: #fcfcfd;
+      color: var(--text-primary);
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
       font-size: 14px; line-height: 20px;
       cursor: pointer; transition: background 0.15s; padding: 0 24px;
       text-decoration: none;
     }
-    .btn-primary:hover { background: #758292; }
+    .btn-primary:hover { background: var(--surface-action-hover); }
 
     /* ── TEXT LINKS ─────────────────────────────────────────────────────── */
     .text-link-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
@@ -529,11 +545,11 @@
       font-family: var(--font-copy);
       font-variation-settings: 'wdth' 105, 'wght' 400;
       font-size: 16px; line-height: 24px;
-      color: #fcfcfd;
+      color: var(--text-primary);
       text-decoration: underline;
       text-decoration-thickness: 1px;
       text-underline-offset: 4px;
-      text-decoration-color: #fcfcfd;
+      text-decoration-color: var(--text-primary);
       white-space: nowrap;
       cursor: pointer;
     }
@@ -632,8 +648,8 @@
       justify-content: center;
       gap: 4px;
       padding: 12px 8px;
-      background: linear-gradient(to bottom, #232a34, #181d25);
-      border: 2px solid #2c343f;
+      background: linear-gradient(to bottom, var(--surface-tile-start), var(--surface-tile-end));
+      border: 2px solid var(--surface-hover);
       border-radius: 20px;
       cursor: pointer;
       transition: background 0.15s, border-color 0.15s;
@@ -647,12 +663,12 @@
       text-align: center;
     }
     .btn-loc:not(.selected):hover {
-      background: linear-gradient(to bottom, #2b3344, #1e2530);
-      border-color: rgba(252,252,253,0.15);
+      background: linear-gradient(to bottom, var(--surface-btn-hover-start), var(--surface-btn-hover-end));
+      border-color: var(--border-btn-hover);
     }
     .btn-loc.selected {
-      background: #404a59;
-      border: 2px solid rgba(219,223,230,0.2);
+      background: var(--surface-selected);
+      border: 2px solid var(--border-subtle);
     }
     .btn-loc img, .btn-loc svg { flex-shrink: 0; }
     .btn-type img, .btn-type svg { flex-shrink: 0; }
@@ -670,8 +686,8 @@
       justify-content: center;
       gap: 4px;
       padding: 12px 8px;
-      background: linear-gradient(to bottom, #232a34, #181d25);
-      border: 2px solid #2c343f;
+      background: linear-gradient(to bottom, var(--surface-tile-start), var(--surface-tile-end));
+      border: 2px solid var(--surface-hover);
       border-radius: 20px;
       cursor: pointer;
       transition: background 0.15s, border-color 0.15s;
@@ -684,17 +700,17 @@
       text-align: center;
     }
     .btn-type:not(.selected):not(.disabled):hover {
-      background: linear-gradient(to bottom, #2b3344, #1e2530);
-      border-color: rgba(252,252,253,0.15);
+      background: linear-gradient(to bottom, var(--surface-btn-hover-start), var(--surface-btn-hover-end));
+      border-color: var(--border-btn-hover);
     }
     .btn-type.selected {
-      background: #404a59;
-      border: 2px solid rgba(219,223,230,0.2);
+      background: var(--surface-selected);
+      border: 2px solid var(--border-subtle);
     }
     .btn-type.disabled {
-      background: rgba(55,64,78,0.2);
-      border: 2px solid rgba(252,252,253,0.1);
-      color: rgba(154,163,177,0.3);
+      background: var(--surface-btn-disabled);
+      border: 2px solid var(--text-disabled);
+      color: var(--text-btn-disabled);
       cursor: default;
       pointer-events: none;
     }
@@ -710,8 +726,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(to bottom, #232a34, #181d25);
-      border: 2px solid #2c343f;
+      background: linear-gradient(to bottom, var(--surface-tile-start), var(--surface-tile-end));
+      border: 2px solid var(--surface-hover);
       border-radius: 20px;
       cursor: pointer;
       color: var(--text-primary);
@@ -725,17 +741,17 @@
       min-width: 0;
     }
     .btn-kw:not(.selected):not(.disabled):hover {
-      background: linear-gradient(to bottom, #2b3344, #1e2530);
-      border-color: rgba(252,252,253,0.15);
+      background: linear-gradient(to bottom, var(--surface-btn-hover-start), var(--surface-btn-hover-end));
+      border-color: var(--border-btn-hover);
     }
     .btn-kw.selected {
-      background: #404a59;
-      border: 2px solid rgba(219,223,230,0.2);
+      background: var(--surface-selected);
+      border: 2px solid var(--border-subtle);
     }
     .btn-kw.disabled {
-      background: rgba(55,64,78,0.2);
-      border: 2px solid rgba(252,252,253,0.1);
-      color: rgba(154,163,177,0.3);
+      background: var(--surface-btn-disabled);
+      border: 2px solid var(--text-disabled);
+      color: var(--text-btn-disabled);
       cursor: default;
       pointer-events: none;
     }
@@ -775,8 +791,8 @@
       width: 24px;
       height: 12px;
       border-radius: 999px;
-      background: #fcfcfd;
-      border: 1px solid #2c343f;
+      background: var(--text-primary);
+      border: 1px solid var(--surface-hover);
       cursor: ew-resize;
       pointer-events: auto;
     }
@@ -784,8 +800,8 @@
       width: 24px;
       height: 12px;
       border-radius: 999px;
-      background: #fcfcfd;
-      border: 1px solid #2c343f;
+      background: var(--text-primary);
+      border: 1px solid var(--surface-hover);
       cursor: ew-resize;
       pointer-events: auto;
     }
@@ -815,7 +831,7 @@
     <div class="nav-icon topbar-search-left">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
       <rect width="24" height="24" fill="white" fill-opacity="0.01"/>
-      <path d="M22 22L13.7174 13.7174M15.5435 9.02174C15.5435 12.987 12.5696 15.5435 9.02174 15.5435C5.42174 15.5435 2.5 12.6217 2.5 9.02174C2.5 5.42174 5.42174 2.5 9.02174 2.5C12.6217 2.5 15.5435 5.42174 15.5435 9.02174Z" stroke="#DBDFE6"/>
+      <path d="M22 22L13.7174 13.7174M15.5435 9.02174C15.5435 12.987 12.5696 15.5435 9.02174 15.5435C5.42174 15.5435 2.5 12.6217 2.5 9.02174C2.5 5.42174 5.42174 2.5 9.02174 2.5C12.6217 2.5 15.5435 5.42174 15.5435 9.02174Z" stroke="currentColor"/>
       </svg>
     </div>
   </div>
@@ -839,18 +855,18 @@
     <div class="nav-icon topbar-search-right">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
       <rect width="24" height="24" fill="white" fill-opacity="0.01"/>
-      <path d="M22 22L13.7174 13.7174M15.5435 9.02174C15.5435 12.987 12.5696 15.5435 9.02174 15.5435C5.42174 15.5435 2.5 12.6217 2.5 9.02174C2.5 5.42174 5.42174 2.5 9.02174 2.5C12.6217 2.5 15.5435 5.42174 15.5435 9.02174Z" stroke="#DBDFE6"/>
+      <path d="M22 22L13.7174 13.7174M15.5435 9.02174C15.5435 12.987 12.5696 15.5435 9.02174 15.5435C5.42174 15.5435 2.5 12.6217 2.5 9.02174C2.5 5.42174 5.42174 2.5 9.02174 2.5C12.6217 2.5 15.5435 5.42174 15.5435 9.02174Z" stroke="currentColor"/>
       </svg>
     </div>
     <div class="nav-icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
       <rect width="24" height="24" fill="white" fill-opacity="0.01"/>
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M2.11091 4.61091C4.2588 2.46303 7.7412 2.46303 9.88909 4.61091L12 6.72183L14.1109 4.61091C16.2588 2.46303 19.7412 2.46303 21.8891 4.61091C24.037 6.7588 24.037 10.2412 21.8891 12.3891L12 22.2782L2.11091 12.3891C-0.036971 10.2412 -0.036971 6.7588 2.11091 4.61091Z" stroke="#DBDFE6" stroke-linecap="round"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M2.11091 4.61091C4.2588 2.46303 7.7412 2.46303 9.88909 4.61091L12 6.72183L14.1109 4.61091C16.2588 2.46303 19.7412 2.46303 21.8891 4.61091C24.037 6.7588 24.037 10.2412 21.8891 12.3891L12 22.2782L2.11091 12.3891C-0.036971 10.2412 -0.036971 6.7588 2.11091 4.61091Z" stroke="currentColor" stroke-linecap="round"/>
       </svg>
     </div>
     <div class="nav-icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 13.5C18.1 13.5 18.5 13.9 18.5 14.5V21.5H5.5V14.5C5.5 13.9 5.9 13.5 6.5 13.5H17.5ZM13.5 3.5C14.6 3.5 15.5 4.4 15.5 5.5V8.5C15.5 9.6 14.6 10.5 13.5 10.5H10.5C9.4 10.5 8.5 9.6 8.5 8.5V5.5C8.5 4.4 9.4 3.5 10.5 3.5H13.5Z" stroke="#DBDFE6"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 13.5C18.1 13.5 18.5 13.9 18.5 14.5V21.5H5.5V14.5C5.5 13.9 5.9 13.5 6.5 13.5H17.5ZM13.5 3.5C14.6 3.5 15.5 4.4 15.5 5.5V8.5C15.5 9.6 14.6 10.5 13.5 10.5H10.5C9.4 10.5 8.5 9.6 8.5 8.5V5.5C8.5 4.4 9.4 3.5 10.5 3.5H13.5Z" stroke="currentColor"/>
       </svg>
     </div>
   </div>
@@ -863,7 +879,7 @@
   <div class="header">
     <div class="header-icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <path d="M18.5 8.5H13.5V40.5C13.5 41.5609 13.9214 42.5783 14.6716 43.3284C15.4217 44.0786 16.4391 44.5 17.5 44.5H29.5C30.2082 44.5 30.8971 44.3122 31.5 43.9641M18.5 8.5V4.5H28.5V8.5M18.5 8.5H28.5M28.5 8.5H33.5V26.5M28.5 18.5H23.5M23.5 18.5H18.5M23.5 18.5V23.5M23.5 18.5V13.5M19.5 36.5H27.5M34.5016 30.5002H29.8016C29.8016 30.5002 27.6016 30.4002 27.6016 32.5002C27.6016 34.6002 29.8016 34.5002 29.8016 34.5002H31.0016C32.0016 34.5002 32.5016 34.9002 32.5016 36.4002V42.0002M34.5016 30.5002C34.5016 26.4002 39.0016 26.5002 39.0016 26.5002H41.5016V34.5002H39.0016C39.0016 34.5002 34.5016 34.6002 34.5016 30.5002ZM41.5016 32.5002H45.0016M41.5016 28.5002H45.0016" stroke="#FCFCFD" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18.5 8.5H13.5V40.5C13.5 41.5609 13.9214 42.5783 14.6716 43.3284C15.4217 44.0786 16.4391 44.5 17.5 44.5H29.5C30.2082 44.5 30.8971 44.3122 31.5 43.9641M18.5 8.5V4.5H28.5V8.5M18.5 8.5H28.5M28.5 8.5H33.5V26.5M28.5 18.5H23.5M23.5 18.5H18.5M23.5 18.5V23.5M23.5 18.5V13.5M19.5 36.5H27.5M34.5016 30.5002H29.8016C29.8016 30.5002 27.6016 30.4002 27.6016 32.5002C27.6016 34.6002 29.8016 34.5002 29.8016 34.5002H31.0016C32.0016 34.5002 32.5016 34.9002 32.5016 36.4002V42.0002M34.5016 30.5002C34.5016 26.4002 39.0016 26.5002 39.0016 26.5002H41.5016V34.5002H39.0016C39.0016 34.5002 34.5016 34.6002 34.5016 30.5002ZM41.5016 32.5002H45.0016M41.5016 28.5002H45.0016" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <h1>Calculate your charging time</h1>
