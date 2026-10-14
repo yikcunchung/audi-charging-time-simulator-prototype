@@ -77,7 +77,6 @@
       --max-content-width: 1920px;
       --page-width:        320px;
       --sys-page-margin:       16px;
-      --topbar-margin:      28px;
       --sys-breakpoint-xs:  320px;
       --sys-breakpoint-sm:  375px;
       --sys-breakpoint-md:  768px;
@@ -154,7 +153,6 @@
     @media (min-width: 768px) {
       :root {
         --sys-page-margin:            40px;
-        --topbar-margin:              40px;
         --sys-space-relative-3xl: 48px;
         --sys-space-relative-4xl: 64px;
         --sys-space-relative-5xl: 72px;
@@ -171,7 +169,6 @@
       :root {
         --page-width:             1024px;
         --sys-page-margin:            60px;
-        --topbar-margin:              60px;
         --sys-space-relative-2xl: 40px;
         --sys-space-relative-3xl: 56px;
         --sys-space-relative-4xl: 72px;
@@ -192,7 +189,6 @@
       :root {
         --page-width:             1440px;
         --sys-page-margin:            96px;
-        --topbar-margin:              96px;
         --sys-space-relative-xl:  32px;
         --sys-space-relative-2xl: 56px;
         --sys-space-relative-3xl: 72px;
@@ -247,7 +243,7 @@
     .topbar {
       height: 72px; background: #020203;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 var(--topbar-margin);
+      padding: 0 var(--sys-page-margin);
     }
     .topbar-mobile-left { display: flex; align-items: center; gap: 12px; flex: 1 0 0; }
     .topbar-menu-label {
@@ -268,9 +264,9 @@
       text-decoration: none; white-space: nowrap; cursor: pointer;
     }
     .topbar-right { display: flex; align-items: center; gap: 24px; flex: 1 0 0; justify-content: flex-end; }
-    .topbar-right .nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .nav-icon img { display: block; width: 24px; height: 24px; object-fit: contain; }
-    .topbar-search-icon { display: none; }
+    .topbar-mobile-left .nav-icon, .topbar-right .nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .nav-icon img { display: block; object-fit: contain; }
+    .topbar-right .topbar-search-icon { display: none; }
 
     /* ── PAGE ───────────────────────────────────────────────────────────── */
     /* Page margins 16 / 28 / 40 / 60 / 96 come from --sys-page-margin; vertical rhythm from the xl spacing token (28 -> 32). */
@@ -803,7 +799,7 @@
       .topbar-mobile-left { display: none; }
       .topbar-nav { display: flex; }
       .topbar-right { flex: initial; flex-shrink: 0; }
-      .topbar-search-icon { display: flex; }
+      .topbar-right .topbar-search-icon { display: flex; }
     }
 
     /* ── RESPONSIVE: LAYOUT ─────────────────────────────────────────────── */
@@ -862,7 +858,7 @@
   <!-- Mobile left: hamburger + Menu (hidden on desktop) -->
   <div class="topbar-mobile-left">
     <div class="nav-icon">
-      <img src="assets/icons/menu.svg" width="24" height="24" alt="">
+      <img src="assets/icons/menu.svg" width="18" height="9" alt="">
     </div>
     <span class="topbar-menu-label">Menu</span>
   </div>
